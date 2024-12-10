@@ -73,10 +73,13 @@ Focus on extracting the following information accurately and structuring it in t
    - "Tps":"Extract the Tps(Goods and Services Tax) from the reciept,if unavailable set to '0'.
    - "Tvq":"Extract the Tvq(Quebec Sales Tax) from the reciept,if unavailable set to '0'.
    -"Tax": total tax from the recipts (should be equal to the sum of Tps and Tvq),if unavailable set to '0'
+    Note: Extract the right most values from the invoice from the specific position where we find the specific data. Dont detect any value containing the percentage(%) or ratio. it should be the a integer number
+    Most importantly extract the Value of Tvq and Tps correctly and it should validate the tax value from the invoice where tax value is Tvq+Tps
+    
    - **Total Price**: Extract the final total amount of the invoice/receipt. If unavailable, set to `0`.
    - **Discount**: Extract any discounts applied to the invoice/receipt total. If unavailable, default to `0`.
 
-    Note: Extract the right most values from the invoice from the specific position where we find the specific data. And value should not be % or ratio. it should be the a integer number
+    Note: Extract the right most values from the invoice from the specific position where we find the specific data. Dont detect any value containing the percentage(%) or ratio. it should be the a integer number
     Most importantly extract the Value of Tvq and Tps correctly and it should validate the tax value from the invoice where tax value is Tvq+Tps
 ### Output Format:
 The result should be structured in the following JSON format:

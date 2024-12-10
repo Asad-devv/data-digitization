@@ -112,7 +112,7 @@ The result should be structured in the following JSON format:
   ]
 }
 
-
+"""
         result = model.generate_content([myfile, prompt])
         result_text = result.text if hasattr(result, "text") else result.choices[0].text
 

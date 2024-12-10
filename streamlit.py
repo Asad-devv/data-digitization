@@ -69,21 +69,32 @@ Focus on extracting the following information accurately and structuring it in t
    - **Invoice Date**: Extract the invoice date in the format `MM/DD/YYYY`. If unavailable, default to today's date.
 
 2. **Item Details (for the invoice/receipt as a whole):**
-   - **Sub-total**: Extract the subtotal amount from the invoice/receipt. if unavailable give Total Price.
-   - "Tps":"Extract the Tps(Goods and Services Tax) from the reciept,if unavailable set to '0'.
-   - "Tvq":"Extract the Tvq(Quebec Sales Tax) from the reciept,if unavailable set to '0'.
-   -"Tax": total tax from the recipts (should be equal to the sum of Tps and Tvq),if unavailable set to '0'
-    Note: Extract the right most values from the invoice from the specific position where we find the specific data. Dont detect any value containing the percentage(%) or ratio. it should be the a integer number
-    Most importantly extract the Value of Tvq and Tps correctly and it should validate the tax value from the invoice where tax value is Tvq+Tps
-    
-   - **Total Price**: Extract the final total amount of the invoice/receipt. If unavailable, set to `0`.
-   - **Discount**: Extract any discounts applied to the invoice/receipt total. If unavailable, default to `0`.
+   - **Sub-total**: Extract the subtotal amount from the invoice/receipt. If unavailable, use the **Total Price** as a fallback value for the subtotal.
+   
+   - **TPS (Goods and Services Tax)**: Extract the **TPS** value (this is the Goods and Services Tax), which typically appears as a specific tax line in the invoice. If **TPS** is unavailable or not found, set it to `0`. Extract only the **rightmost value** from the line containing the **TPS** label. Ensure that this value is an integer and does not contain any percentage sign (`%`).
 
-    Note: Extract the right most values from the invoice from the specific position where we find the specific data. Dont detect any value containing the percentage(%) or ratio. it should be the a integer number
-    Most importantly extract the Value of Tvq and Tps correctly and it should validate the tax value from the invoice where tax value is Tvq+Tps
+   - **TVQ (Quebec Sales Tax)**: Extract the **TVQ** value (this is the Quebec Sales Tax), which typically appears as another specific tax line in the invoice. If **TVQ** is unavailable or not found, set it to `0`. Extract only the **rightmost value** from the line containing the **TVQ** label. Similarly, make sure the value is an integer and does not contain any percentage sign (`%`).
+   
+   - **Tax**: Calculate the **total tax** as the sum of **TPS** and **TVQ**. This total tax value must be equal to `TPS + TVQ`. If either **TPS** or **TVQ** is missing, you can set the tax value to `0`. Ensure the tax calculation matches the values in the invoice and the sum of the **TPS** and **TVQ**.
+   
+   - **Total Price**: Extract the **Total Price** from the invoice, which is the final amount after taxes and discounts have been applied. If the **Total Price** is unavailable, set it to `0`.
+   
+   - **Discount**: Extract any discounts applied to the invoice/receipt total. If no discount is found, set it to `0`.
+
+### Extraction Logic:
+
+1. **Sub-total**: This value is usually found near the "Total" or "Amount" line in invoices. If not found, use the **Total Price** value.
+
+2. **TPS and TVQ**: The values for **TPS** and **TVQ** typically appear on separate lines labeled as such in the invoice. These values must be extracted from the **rightmost** position of the line where these labels appear, ensuring that they are integer values (and not percentages). 
+
+3. **Tax Validation**: The **Tax** value is the sum of **TPS** and **TVQ**. Ensure that the **tax value** is equal to **TPS + TVQ**. If it does not match, set the **Tax** to `0` as a fallback.
+
+4. **Final Price Calculation**: Ensure that the **Total Price** is calculated correctly by adding **Sub-total** and **Tax**, minus any **Discounts** (if available).
+
 ### Output Format:
 The result should be structured in the following JSON format:
 
+```json
 {
   "vendor_name": "value or None",
   "invoice_number": "value or None",
@@ -92,8 +103,8 @@ The result should be structured in the following JSON format:
   "data": [
     {
       "sub_total": value or 0,
-      "tps":value or 0,
-      "tvq":value or 0,
+      "tps": value or 0,
+      "tvq": value or 0,
       "tax": value or 0,
       "total_price": value or 0,
       "discount": value or 0
@@ -101,10 +112,6 @@ The result should be structured in the following JSON format:
   ]
 }
 
-### Notes:
-- If the image is blurry, output: {"error": "The image is blurry and cannot be processed."}
-- Ensure the extraction is accurate and adheres to the specified JSON format.
-"""
 
         result = model.generate_content([myfile, prompt])
         result_text = result.text if hasattr(result, "text") else result.choices[0].text

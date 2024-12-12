@@ -362,7 +362,7 @@ else:
         st.success("Logged out successfully!")
 
     st.sidebar.header("Navigation")
-    options = ["Upload Invoice", "Add Product","Generate Summary", "Delete Product","Delete All"]
+    options = ["Upload Invoice", "Add Product","Generate Summary", "Delete Product","Delete All",]
     choice = st.sidebar.radio("Go to:", options)
 
     if choice == "Upload Invoice":

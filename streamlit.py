@@ -330,6 +330,22 @@ def delete_product():
         except Exception as e:
             st.error(f"Error deleting product: {e}")
 
+def delete_all():
+    st.header("Delete All")
+    st.text("Do you want to delete all the data?")
+    # Confirmation button
+    if st.button("Yes"):
+        try:
+            # Delete all documents where the username matches the current session username
+            result = product_collection.delete_many({"username": st.session_state.username})
+            
+            if result.deleted_count > 0:
+                st.success(f"Deleted {result.deleted_count} products successfully!")
+            else:
+                st.error("No products found or you don't have permission to delete them.")
+        except Exception as e:
+            st.error(f"Error deleting products: {e}")
+
 # Main Application
 if not st.session_state.logged_in:
     st.sidebar.title("Authentication")
@@ -346,7 +362,7 @@ else:
         st.success("Logged out successfully!")
 
     st.sidebar.header("Navigation")
-    options = ["Upload Invoice", "Add Product","Generate Summary", "Delete Product",]
+    options = ["Upload Invoice", "Add Product","Generate Summary", "Delete Product","Delete All"]
     choice = st.sidebar.radio("Go to:", options)
 
     if choice == "Upload Invoice":
@@ -396,4 +412,6 @@ else:
 
     elif choice == "Delete Product":
         delete_product()
+    elif choice == "Delete All":
+        delete_all()
 

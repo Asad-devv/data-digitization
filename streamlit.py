@@ -74,6 +74,8 @@ Focus on extracting the following information accurately and structuring it in t
    - **TPS (Goods and Services Tax)**: Extract the **TPS** value (this is the Goods and Services Tax), which typically appears as a specific tax line in the invoice. If **TPS** is unavailable or not found, set it to `0`. Extract only the **rightmost value** from the line containing the **TPS** label. Ensure that this value is a real number and does not contain any percentage sign (`%`).
 
    - **TVQ (Quebec Sales Tax)**: Extract the **TVQ** value (this is the Quebec Sales Tax), which typically appears as another specific tax line in the invoice. If **TVQ** is unavailable or not found, set it to `0`. Extract only the **rightmost value** from the line containing the **TVQ** label. Similarly, make sure the value is real number and does not contain any percentage sign (`%`).
+
+   NOTE: TPS should not be equal to TVQ .TVQ should always be higher than TPS
    
    - **Tax**: Calculate the **total tax** as the sum of **TPS** and **TVQ**. This total tax value must be equal to `TPS + TVQ`. If either **TPS** or **TVQ** is missing, you can set the tax value to `0`. Ensure the tax calculation matches the values in the invoice and the sum of the **TPS** and **TVQ**.
    

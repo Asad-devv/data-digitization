@@ -11,6 +11,7 @@ import tempfile
 import pandas as pd
 from io import BytesIO
 from datetime import datetime
+from PIL import Image
 # Load environment variables
 load_dotenv()
 
@@ -44,8 +45,15 @@ def hash_password(password):
 
 def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+def resize_image(image_bytes, max_size=(1024, 1024)):
+    image = Image.open(BytesIO(image_bytes))
+    image.thumbnail(max_size)
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
 
 def extract_invoice_data(image_bytes, model_name="gemini-1.5-flash-8b-latest"):
+    image_bytes = resize_image(image_bytes, max_size=(1024, 1024))
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
         temp_file.write(image_bytes)
         temp_file_path = temp_file.name

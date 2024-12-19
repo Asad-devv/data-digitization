@@ -129,7 +129,7 @@ The result should be structured in the following JSON format:
         start_index = result_text.find("{")
         end_index = result_text.rfind("}") + 1
         invoice_data = json.loads(result_text[start_index:end_index])
-        st.write("Invoice name",image_bytes)
+        
         st.write("Extracted Invoice Data:", invoice_data)
         return invoice_data
     except Exception as e:
